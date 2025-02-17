@@ -1070,8 +1070,11 @@ void CentralLB::CheckForRealloc(){
 
 void CentralLB::ResumeFromReallocCheckpoint(){
 #if CMK_SHRINK_EXPAND
-    std::vector<char> avail(se_avail_vector.begin(), se_avail_vector.begin() + CkNumPes());
-    se_avail_vector.clear();
+    // std::vector<char> avail(se_avail_vector.begin(), se_avail_vector.begin() + CkNumPes());
+    std::vector<char> avail(se_avail_vector, se_avail_vector + CkNumPes());
+    // se_avail_vector.clear();
+    delete[] se_avail_vector;  // If dynamically allocated with new[]
+    se_avail_vector = nullptr; // Optional safety measure
     thisProxy.WillIbekilled(avail, numProcessAfterRestart);
 #endif
 }
