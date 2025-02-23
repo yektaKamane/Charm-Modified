@@ -196,7 +196,7 @@ CLINKAGE void CkRegisterMainModule(void);
 typedef  void  (*CkExitFn) (void);
 
 extern CkQ<CkExitFn> _CkExitFnVec;
-extern void registerExitFn(CkExitFn);
+// extern void registerExitFn(CkExitFn);
 // Each registered exit function must eventually lead to a single call
 // being made to CkContinueExit()
 extern void CkContinueExit();

@@ -1828,10 +1828,10 @@ void FTN_NAME(CHARM_MAIN_FORTRAN_WRAPPER, charm_main_fortran_wrapper)(int *argc,
 // will perform task of collecting of info from all pes to pe0, and call
 // CkContinueExit() on pe0 again to recursively traverse the registered exitFn.
 // see trace-summary for an example.
-void registerExitFn(CkExitFn fn)
+// void registerExitFn(CkExitFn fn)
 {
 #if CMK_SHRINK_EXPAND
-  CkAbort("registerExitFn is called when shrink-expand is enabled!");
+  // CkAbort("registerExitFn is called when shrink-expand is enabled!");
 #else
   _CkExitFnVec.enq(fn);
 #endif
