@@ -1829,12 +1829,12 @@ void FTN_NAME(CHARM_MAIN_FORTRAN_WRAPPER, charm_main_fortran_wrapper)(int *argc,
 // CkContinueExit() on pe0 again to recursively traverse the registered exitFn.
 // see trace-summary for an example.
 // void registerExitFn(CkExitFn fn)
-{
-#if CMK_SHRINK_EXPAND
-  // CkAbort("registerExitFn is called when shrink-expand is enabled!");
-#else
-  _CkExitFnVec.enq(fn);
-#endif
-}
+// {
+// #if CMK_SHRINK_EXPAND
+//   // CkAbort("registerExitFn is called when shrink-expand is enabled!");
+// #else
+//   _CkExitFnVec.enq(fn);
+// #endif
+// }
 
 /*@}*/
