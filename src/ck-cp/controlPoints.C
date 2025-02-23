@@ -1211,7 +1211,7 @@ extern "C" void controlPointShutdown(){
 
 /// A function called at startup on each node to register controlPointShutdown() to be called at CkExit()
 void controlPointInitNode(){
-  registerExitFn(controlPointShutdown);
+  // registerExitFn(controlPointShutdown);
 }
 
 /// Called periodically to allow control point framework to do things periodically

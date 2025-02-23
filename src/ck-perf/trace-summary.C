@@ -1322,7 +1322,7 @@ static void CombineSummary()
 void initTraceSummaryBOC()
 {
   if (CkMyRank() == 0) {
-    registerExitFn(CombineSummary);
+    // registerExitFn(CombineSummary);
   }
 }
 

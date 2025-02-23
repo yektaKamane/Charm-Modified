@@ -138,7 +138,7 @@ extern "C" void traceSimpleExitFunction() {
 // Initialization of the parallel trace module.
 void initTraceSimpleBOC() {
     if (CkMyRank() == 0) {
-      registerExitFn(traceSimpleExitFunction);
+      // registerExitFn(traceSimpleExitFunction);
     }
 }
 

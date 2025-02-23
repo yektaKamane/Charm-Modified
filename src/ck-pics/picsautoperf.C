@@ -778,7 +778,7 @@ void _initTraceAutoPerfBOC()
   CkpvInitialize(FILE*, fpSummary);
   CkpvAccess(fpSummary) = NULL;
     if (CkMyRank() == 0) {
-      registerExitFn(traceAutoPerfExitFunction);
+      // registerExitFn(traceAutoPerfExitFunction);
     }
     CkpvInitialize(SavedPerfDatabase*, perfDatabase);
     CkpvAccess(perfDatabase) = new SavedPerfDatabase();
