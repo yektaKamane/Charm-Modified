@@ -1694,7 +1694,7 @@ void initTraceProjectionsBOC()
 {
   // CkPrintf("[%d] Trace Projections initialization called!\n", CkMyPe());
     if (CkMyRank() == 0) {
-      registerExitFn(TraceProjectionsExitHandler);
+      // registerExitFn(TraceProjectionsExitHandler);
     }
 #if 0
   } // this is so indentation does not get messed up

@@ -248,7 +248,7 @@ extern "C" void traceControlPointsExitFunction() {
 void initTraceControlPointsBOC() {
 /*
     if (CkMyRank() == 0) {
-      registerExitFn(traceControlPointsExitFunction);
+      // registerExitFn(traceControlPointsExitFunction);
     }
 */
 }
