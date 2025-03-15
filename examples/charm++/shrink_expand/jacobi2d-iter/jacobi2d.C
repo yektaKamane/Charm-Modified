@@ -1,8 +1,18 @@
 #include "jacobi2d.decl.h"
 #include "converse.h"
 #include "conv-ccs.h"
+#include "manager.h"
+#include "CentralLB.h"
+#include <charm++.h>
+#include "ck.h"
+#include "envelope.h"
+#include "CentralLB.h"
+#include "LBSimulation.h"
+#include "BaseLB.h"
 
 /*readonly*/ CProxy_Main mainProxy;
+/*readonly*/ CProxy_CentralLB lbProxy; // Add this!
+
 /*readonly*/ int block_height;
 /*readonly*/ int block_width;
 /*readonly*/ int array_height;
@@ -16,19 +26,6 @@
 // I just wrote these simple wrappers that will make the mod work as expected. -1 maps to the highest value.
 #define wrap_x(a)  (((a)+num_chare_cols)%num_chare_cols)
 #define wrap_y(a)  (((a)+num_chare_rows)%num_chare_rows)
-
-
-// added
-void handler(char *msg)
-{
-  if(CcsIsRemoteRequest()) {
-    char answer[1024];
-    char *name=msg+CmiMsgHeaderSizeBytes;
-    sprintf(answer, "hello %s from processor %d\n", name, CmiMyPe());
-    CmiPrintf("CCS Ping handler called on %d with '%s'.\n",CmiMyPe(),name);
-    CcsSendReply(strlen(answer)+1, answer);
-  }
-}
 
 
 class Main : public CBase_Main
@@ -48,12 +45,21 @@ public:
           CkAbort("Abort");
         }
 
-        // added
-        int i;
-        CcsRegisterHandler("ping2", (CmiHandler)handler);
-        CcsRegisterHandler("ping", (CmiHandler)handler);
-        CmiPrintf("CCS Handlers registered.  Waiting for net requests...\n");
+        // Initialize the CentralLB proxy correctly
+        // CkLBOptions lbOptions;
+        // lbProxy = CProxy_CentralLB::ckNew(lbOptions); // Use proxy instead of direct instantiation
 
+        // added
+        // int i;
+        // // CcsRegisterHandler("ping2", (CmiHandler)handler);
+        // // CcsRegisterHandler("ping", (CmiHandler)handler);
+        // // lbinit(); // Register the Load Balancer
+        CkLBOptions lbOptions;  // Create an instance of CkLBOptions
+        CentralLB myLB(lbOptions);
+        // myLB.initLB();
+        
+        // manager_init();
+        CmiPrintf("CCS Handlers registered.  Waiting for net requests...\n");
 
         // set iteration counter to zero
         iterations=0;
@@ -195,10 +201,22 @@ public:
             useLB = 0;
             if(thisIndex.x==0 && thisIndex.y==0) CkPrintf("PROC#%d Calling LBD --------------------- iteration=%d\n",CkMyPe(),iteration);
             AtSync();
-        } else {
+            // Use the proxy to call CheckForRealloc
+            // if (CkMyPe() == 0) { // Only call from PE 0
+            //     lbProxy.CheckForRealloc();
+            // }
 
+        } else {
+            
+            
         useLB=1;
-        if(thisIndex.x==0 && thisIndex.y==0) CkPrintf("PROC#%d started --------------------- iteration=%d\n",CkMyPe(),iteration);
+        if(thisIndex.x==0 && thisIndex.y==0) { 
+            CkPrintf("PROC#%d started --------------------- iteration=%d\n",CkMyPe(),iteration);
+            int numCkNumPes = CkNumPes();
+            int numCkNumNodes = CkNumNodes();
+            printf("num PEs: %d\n", numCkNumPes);
+            printf("num logical nodes: %d\n", numCkNumNodes);
+        }
 				iteration++;
         // Copy left column and right column into temporary arrays
         array1d left_edge(block_height);
