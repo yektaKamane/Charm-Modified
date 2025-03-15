@@ -271,7 +271,7 @@ public:
 // CreateFooLB():        create BOC and register with LBManager with a
 //                       sequence ticket,
 // AllocateFooLB():      allocate the class instead of a BOC
-// static void lbinit(): an init call for charm module registration
+// static void lbinit() //: an init call for charm module registration
 #if CMK_LBDB_ON
 
 #  define CreateLBFunc_Def(x, str)                                                       \

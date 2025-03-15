@@ -25,6 +25,11 @@ extern int load_balancer_created;
 static void handler(char *bit_map)
 {
 #if CMK_SHRINK_EXPAND
+    if(load_balancer_created)
+        printf("load balancer created? yes");
+    else 
+        printf("load balancer created? no");
+
     shrinkExpandreplyToken = CcsDelayReply();
     bit_map += CmiMsgHeaderSizeBytes;
     pending_realloc_state = REALLOC_MSG_RECEIVED;
@@ -36,11 +41,17 @@ static void handler(char *bit_map)
     LBManagerObj()->get_avail_vector(se_avail_vector);
 
     numProcessAfterRestart = *((int *)(bit_map + CkNumPes()));
+
+    printf("\n\nnum of Process After Restart: %d\n", numProcessAfterRestart);
+    // Now, prepare the reply message (e.g., the updated bitmap or other data)
+
 #endif
 }
 
 void manager_init(){
+    printf("before\n\n\n");
 #if CMK_SHRINK_EXPAND
+    printf("after\n\n\n");
     static int inited = 0;
     willContinue = 0;
     if (inited) return;

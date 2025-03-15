@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "ccs-client.h"
+
 
 #define SHRINK 1
 #define EXPAND 0
@@ -21,7 +23,7 @@ int main (int argc, char **argv)
 
     // Create a CcsServer and connect to the given hostname and port
     CcsServer server;
-    char host[BUF], *bitmap;
+    char host[BUF], *bitmap, *response_ccs;
     int i, port, cmdLen, mode;
 
     sprintf(host, "%s", argv[1]);
@@ -41,6 +43,7 @@ int main (int argc, char **argv)
     CcsConnect(&server, host, port, NULL);
     printf("Connected to server\n");
 
+
     // define some variables to test
     int numNodes, numPes, nodeFirst, nodeSize;
     // get their values
@@ -54,15 +57,9 @@ int main (int argc, char **argv)
     printf("First node: %d\n", nodeFirst);
     printf("node size: %d\n", nodeSize);
 
-    char *sendWhat = "client message";
-
-
-
-
-    // size of the following array
     cmdLen = OLDNPROCS * sizeof(char) + sizeof(int) + sizeof(char);
-    // which nodes to use binary array
     bitmap = (char *) malloc(cmdLen);
+    response_ccs = (char *) malloc(100);
 
     if (mode == EXPAND) {
         printf("Sending expand command.\n");
@@ -81,12 +78,28 @@ int main (int argc, char **argv)
     }
     memcpy(&bitmap[OLDNPROCS], &NEWNPROCS, sizeof(int));
     bitmap[OLDNPROCS+sizeof(int)] = '\0';
-    // CcsSendRequest(&server, "ping", 0, cmdLen, bitmap);
-    CcsSendRequest(&server, "ping", 0, strlen(sendWhat)+1, sendWhat);
+    CcsSendRequest(&server, "set_bitmap", 0, cmdLen, bitmap);
 
-    printf("Waiting for reply...\n" );
-    CcsRecvResponse(&server, strlen(sendWhat)+1, sendWhat , 180);
-    printf("Reply received.\n");
+    // printf("Waiting for reply...\n" );
+    // CcsRecvResponse(&server, cmdLen, bitmap , 180);
+    // CcsRecvResponse(&server, 100, response_ccs , 180);
+    // printf("Reply received: %s\n", response_ccs);
+
+    while(1){
+
+        sleep(10); 
+        // get their values
+        numNodes = CcsNumNodes(&server);
+        numPes = CcsNumPes(&server);
+        nodeFirst = CcsNodeFirst(&server, 0);
+        nodeSize = CcsNodeSize(&server, 0);
+
+        printf("num nodes: %d\n", numNodes);
+        printf("num PEs: %d\n", numPes);
+        printf("First node: %d\n", nodeFirst);
+        printf("node size: %d\n", nodeSize);
+    }
+    
 
     return 0;
 }

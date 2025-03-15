@@ -741,6 +741,10 @@ static int arg_usehostname;
 static int arg_interactive; /* for charm4py interactive sessions when using ssh */
 
 #if CMK_SHRINK_EXPAND
+static int print_message = []() {
+  printf("\n \n Y> shrink expand enabled \n \n");
+  return 0;
+}();
 static char **saved_argv;
 static int saved_argc;
 static int arg_realloc_pes;
