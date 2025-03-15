@@ -41,7 +41,27 @@ int main (int argc, char **argv)
     CcsConnect(&server, host, port, NULL);
     printf("Connected to server\n");
 
+    // define some variables to test
+    int numNodes, numPes, nodeFirst, nodeSize;
+    // get their values
+    numNodes = CcsNumNodes(&server);
+    numPes = CcsNumPes(&server);
+    nodeFirst = CcsNodeFirst(&server, 0);
+    nodeSize = CcsNodeSize(&server, 0);
+
+    printf("num nodes: %d\n", numNodes);
+    printf("num PEs: %d\n", numPes);
+    printf("First node: %d\n", nodeFirst);
+    printf("node size: %d\n", nodeSize);
+
+    char *sendWhat = "client message";
+
+
+
+
+    // size of the following array
     cmdLen = OLDNPROCS * sizeof(char) + sizeof(int) + sizeof(char);
+    // which nodes to use binary array
     bitmap = (char *) malloc(cmdLen);
 
     if (mode == EXPAND) {
@@ -61,10 +81,11 @@ int main (int argc, char **argv)
     }
     memcpy(&bitmap[OLDNPROCS], &NEWNPROCS, sizeof(int));
     bitmap[OLDNPROCS+sizeof(int)] = '\0';
-    CcsSendRequest(&server, "set_bitmap", 0, cmdLen, bitmap);
+    // CcsSendRequest(&server, "ping", 0, cmdLen, bitmap);
+    CcsSendRequest(&server, "ping", 0, strlen(sendWhat)+1, sendWhat);
 
     printf("Waiting for reply...\n" );
-    CcsRecvResponse(&server, cmdLen, bitmap , 180);
+    CcsRecvResponse(&server, strlen(sendWhat)+1, sendWhat , 180);
     printf("Reply received.\n");
 
     return 0;
